@@ -1,0 +1,9 @@
+import React from 'react';
+<% props.imports.forEach(function(lineToImport) { %>
+<%- lineToImport -%> <% }); %>
+
+export default function <%= props.name %>() {
+  return (
+    <Container />
+  );
+}
