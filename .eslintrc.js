@@ -1,6 +1,3 @@
-/**
- * @type {import("eslint").Linter.Config}
- */
 module.exports = {
   parser: '@typescript-eslint/parser',
 
@@ -10,9 +7,16 @@ module.exports = {
   },
   extends: [
     'plugin:@typescript-eslint/recommended',
-
     'prettier',
     'plugin:prettier/recommended',
   ],
-  rules: {},
+  plugins: ['no-comments'],
+  rules: {
+    'no-comments/disallowComments': [
+      'error',
+      {
+        allow: ['TODO', 'DEBUG'],
+      },
+    ],
+  },
 }

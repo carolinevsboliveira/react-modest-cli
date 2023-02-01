@@ -69,7 +69,6 @@ const typeTranslator = (
   generate: (options: GluegunTemplateGenerateOptions) => Promise<string>,
   generatedName?: string
 ): {
-  //importsLine: string[]
   filesToCreate: Promise<string>[]
 } => {
   const typeTranslator = templateMaps.get(type)
@@ -81,7 +80,6 @@ const typeTranslator = (
       )}`
     )
   return {
-    //importsLine: selectedType.importsLine,
     filesToCreate: typeTranslator?.filesToCreate.map((file) => {
       console.log(file.importLines)
       return generate({
