@@ -1,14 +1,24 @@
 import { GluegunTemplateGenerateOptions } from 'gluegun/build/types/toolbox/template-types'
 
-const templateMaps = new Map([
+const templateMaps = new Map<
+  string,
+  {
+    filesToCreate: {
+      model: string
+      extension: string
+      fileName?: string
+      importLines?: string[]
+    }[]
+  }
+>([
   [
     'css',
     {
       filesToCreate: [
-        { model: 'default.css.ejs', fileName: 'style.css' },
+        { model: 'default.css.ejs', extension: 'css', fileName: 'style' },
         {
+          extension: 'tsx',
           model: 'component-with-classname.ejs',
-          fileName: '%name%.ts',
           importLines: [`import './style.css'`],
         },
       ],
@@ -18,10 +28,10 @@ const templateMaps = new Map([
     'styled',
     {
       filesToCreate: [
-        { model: 'styled.ts.ejs', fileName: 'style.ts' },
+        { model: 'styled.ts.ejs', extension: 'ts', fileName: 'style' },
         {
           model: 'component.ejs',
-          fileName: '%name%.ts',
+          extension: 'tsx',
           importLines: [`import { Container } from './style'`],
         },
       ],
@@ -31,11 +41,23 @@ const templateMaps = new Map([
     'scss',
     {
       filesToCreate: [
-        { model: 'default.css.ejs', fileName: 'style.scss' },
+        { model: 'default.css.ejs', fileName: 'style', extension: 'scss' },
         {
           model: 'component-with-classname.ejs',
-          fileName: '%name%.ts',
+          extension: 'tsx',
           importLines: [`import './style.scss'`],
+        },
+      ],
+    },
+  ],
+  [
+    'single',
+    {
+      filesToCreate: [
+        {
+          model: 'single-component.ejs',
+          extension: 'tsx',
+          importLines: [],
         },
       ],
     },
@@ -64,11 +86,13 @@ const typeTranslator = (
       console.log(file.importLines)
       return generate({
         props: {
-          name: generatedName ? generatedName : '',
+          name: generatedName
+            ? generatedName.charAt(0).toUpperCase() + generatedName.slice(1)
+            : '',
           imports: file.importLines ?? [],
         },
         template: file.model,
-        target: `src/model/${file.fileName.replace('%name%', generatedName)}`,
+        target: `src/model/${file.fileName ?? generatedName}.${file.extension}`,
       })
     }),
   }
