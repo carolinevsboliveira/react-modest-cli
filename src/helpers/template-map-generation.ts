@@ -1,4 +1,5 @@
 import { GluegunTemplateGenerateOptions } from 'gluegun/build/types/toolbox/template-types'
+import { capitalizeFirtsLetter } from './capitalize-first-letter'
 
 const templateMaps = new Map<
   string,
@@ -57,7 +58,6 @@ const templateMaps = new Map<
         {
           model: 'single-component.ejs',
           extension: 'tsx',
-          importLines: [],
         },
       ],
     },
@@ -86,9 +86,7 @@ const typeTranslator = (
       console.log(file.importLines)
       return generate({
         props: {
-          name: generatedName
-            ? generatedName.charAt(0).toUpperCase() + generatedName.slice(1)
-            : '',
+          name: capitalizeFirtsLetter(generatedName),
           imports: file.importLines ?? [],
         },
         template: file.model,
