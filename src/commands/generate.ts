@@ -1,23 +1,28 @@
 import { GluegunToolbox } from 'gluegun'
+import { typeTranslator } from '../helpers/template-map-generation'
 
 module.exports = {
-  name: 'generate',
-  alias: ['g'],
+  name: 'create',
+  alias: ['c'],
   run: async (toolbox: GluegunToolbox) => {
     const {
       parameters,
       template: { generate },
-      print: { info },
+      print: { error },
     } = toolbox
 
     const name = parameters.first
 
-    await generate({
-      template: 'model.ts.ejs',
-      target: `models/${name}-model.ts`,
-      props: { name },
-    })
+    try {
+      const typeTranslated = typeTranslator(
+        parameters.options.type,
+        generate,
+        name
+      )
 
-    info(`Generated file at models/${name}-model.ts`)
+      await Promise.all(typeTranslated.filesToCreate)
+    } catch (err) {
+      error(err.message)
+    }
   },
 }
