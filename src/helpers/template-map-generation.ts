@@ -64,33 +64,55 @@ const templateMaps = new Map<
   ],
 ])
 
-const typeTranslator = (
-  type: string,
-  generate: (options: GluegunTemplateGenerateOptions) => Promise<string>,
+type typeTranslatorProps = {
+  type: string
+  generate: (options: GluegunTemplateGenerateOptions) => Promise<string>
   generatedName?: string
-): {
+  generateTestFile?: boolean
+}
+
+const typeTranslator = ({
+  type,
+  generate,
+  generatedName,
+  generateTestFile,
+}: typeTranslatorProps): {
   filesToCreate: Promise<string>[]
 } => {
   const typeTranslator = templateMaps.get(type)
 
+  if (!generatedName) throw new Error('A component name should be provided.')
   if (!typeTranslator)
     throw new Error(
       `Invalid type paramter. Try one of ${Array.from(templateMaps.keys()).join(
         ', '
-      )}`
+      )}.`
     )
-  return {
-    filesToCreate: typeTranslator?.filesToCreate.map((file) => {
-      console.log(file.importLines)
-      return generate({
+
+  const filesToCreate = typeTranslator?.filesToCreate.map((file) => {
+    return generate({
+      props: {
+        name: capitalizeFirtsLetter(generatedName),
+        imports: file.importLines ?? [],
+      },
+      template: file.model,
+      target: `src/model/${file.fileName ?? generatedName}.${file.extension}`,
+    })
+  })
+  if (generateTestFile) {
+    filesToCreate.push(
+      generate({
+        template: 'test.tsx.ejs',
         props: {
           name: capitalizeFirtsLetter(generatedName),
-          imports: file.importLines ?? [],
         },
-        template: file.model,
-        target: `src/model/${file.fileName ?? generatedName}.${file.extension}`,
+        target: `src/model/${generatedName}.spec.tsx`,
       })
-    }),
+    )
+  }
+
+  return {
+    filesToCreate,
   }
 }
 export { typeTranslator }

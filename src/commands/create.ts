@@ -17,6 +17,7 @@ module.exports = {
         type: parameters.options.type,
         generate,
         generatedName: parameters.first,
+        generateTestFile: parameters.options.test,
       })
 
       await Promise.all(typeTranslated.filesToCreate)
