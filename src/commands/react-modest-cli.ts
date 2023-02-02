@@ -2,10 +2,25 @@ import { GluegunCommand } from 'gluegun'
 
 const command: GluegunCommand = {
   name: 'react-modest-cli',
+  description: 'A small CLI to create standardized files faster.',
   run: async (toolbox) => {
-    const { print } = toolbox
-
-    print.info('Welcome to your CLI')
+    const { table } = toolbox.print
+    table(
+      [
+        ['Command Name', 'Usage', 'Options'],
+        ['Help', '-h | -help', 'x'],
+        ['Version', '-v | -version', 'x'],
+        [
+          'Create',
+          'c | create',
+          '<name> --type=<available_type> --hasTestFile',
+        ],
+      ],
+      {
+        format: 'lean',
+        style: { 'padding-left': 0, 'padding-right': 8 },
+      }
+    )
   },
 }
 
