@@ -19,4 +19,5 @@ module.exports = {
       },
     ],
   },
+  ignorePaterns: ['bin', 'node_modules'],
 }
