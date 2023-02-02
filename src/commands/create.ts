@@ -4,6 +4,7 @@ import { typeTranslator } from '../helpers/template-map-generation'
 module.exports = {
   name: 'create',
   alias: ['c'],
+  description: 'Create standart files according to type',
   run: async (toolbox: GluegunToolbox) => {
     const {
       parameters,
@@ -11,14 +12,12 @@ module.exports = {
       print: { error },
     } = toolbox
 
-    const name = parameters.first
-
     try {
-      const typeTranslated = typeTranslator(
-        parameters.options.type,
+      const typeTranslated = typeTranslator({
+        type: parameters.options.type,
         generate,
-        name
-      )
+        generatedName: parameters.first,
+      })
 
       await Promise.all(typeTranslated.filesToCreate)
     } catch (err) {
