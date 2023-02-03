@@ -1,6 +1,7 @@
 import { GluegunTemplateGenerateOptions } from 'gluegun/build/types/toolbox/template-types'
 import { capitalizeFirtsLetter } from './capitalize-first-letter'
 import { template } from './map-template-according-to-language'
+import { validateInputedParams } from './params-validation'
 
 type typeTranslatorProps = {
   type: string
@@ -23,13 +24,11 @@ const typeTranslator = ({
 } => {
   const typeTranslator = template[language as availableLanguages].get(type)
 
-  if (!generatedName) throw new Error('A component name should be provided.')
-  if (!typeTranslator)
-    throw new Error(
-      `Invalid type paramter. Try one of ${Array.from(
-        template[language].keys()
-      ).join(', ')}.`
-    )
+  validateInputedParams({
+    generatedName,
+    typeTranslatorExists: Boolean(typeTranslator),
+    typeTranslatorKeys: Array.from(template[language].keys()),
+  })
 
   const filesToCreate = typeTranslator?.filesToCreate.map((file) => {
     return generate({
