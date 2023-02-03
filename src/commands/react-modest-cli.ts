@@ -10,11 +10,7 @@ const command: GluegunCommand = {
         ['Command Name', 'Usage', 'Options'],
         ['Help', '-h | -help', 'x'],
         ['Version', '-v | -version', 'x'],
-        [
-          'Create',
-          'c | create',
-          '<name> --type=<available_type> --hasTestFile',
-        ],
+        ['Create', 'c | create', '<name> --type=<available_type> --test'],
       ],
       {
         format: 'lean',

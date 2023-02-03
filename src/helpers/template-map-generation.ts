@@ -99,6 +99,7 @@ const typeTranslator = ({
       target: `src/model/${file.fileName ?? generatedName}.${file.extension}`,
     })
   })
+
   if (generateTestFile) {
     filesToCreate.push(
       generate({
