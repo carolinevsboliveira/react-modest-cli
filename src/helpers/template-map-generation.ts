@@ -1,92 +1,34 @@
 import { GluegunTemplateGenerateOptions } from 'gluegun/build/types/toolbox/template-types'
 import { capitalizeFirtsLetter } from './capitalize-first-letter'
-
-const templateMaps = new Map<
-  string,
-  {
-    filesToCreate: {
-      model: string
-      extension: string
-      fileName?: string
-      importLines?: string[]
-    }[]
-  }
->([
-  [
-    'css',
-    {
-      filesToCreate: [
-        { model: 'default.css.ejs', extension: 'css', fileName: 'style' },
-        {
-          extension: 'tsx',
-          model: 'component-with-classname.ejs',
-          importLines: [`import './style.css'`],
-        },
-      ],
-    },
-  ],
-  [
-    'styled',
-    {
-      filesToCreate: [
-        { model: 'styled.ts.ejs', extension: 'ts', fileName: 'style' },
-        {
-          model: 'component.ejs',
-          extension: 'tsx',
-          importLines: [`import { Container } from './style'`],
-        },
-      ],
-    },
-  ],
-  [
-    'scss',
-    {
-      filesToCreate: [
-        { model: 'default.css.ejs', fileName: 'style', extension: 'scss' },
-        {
-          model: 'component-with-classname.ejs',
-          extension: 'tsx',
-          importLines: [`import './style.scss'`],
-        },
-      ],
-    },
-  ],
-  [
-    'single',
-    {
-      filesToCreate: [
-        {
-          model: 'single-component.ejs',
-          extension: 'tsx',
-        },
-      ],
-    },
-  ],
-])
+import { template } from './map-template-according-to-language'
 
 type typeTranslatorProps = {
   type: string
   generate: (options: GluegunTemplateGenerateOptions) => Promise<string>
   generatedName?: string
   generateTestFile?: boolean
+  language: string
 }
+
+type availableLanguages = 'ts' | 'js' | 'javascript' | 'typescript'
 
 const typeTranslator = ({
   type,
   generate,
   generatedName,
   generateTestFile,
+  language,
 }: typeTranslatorProps): {
   filesToCreate: Promise<string>[]
 } => {
-  const typeTranslator = templateMaps.get(type)
+  const typeTranslator = template[language as availableLanguages].get(type)
 
   if (!generatedName) throw new Error('A component name should be provided.')
   if (!typeTranslator)
     throw new Error(
-      `Invalid type paramter. Try one of ${Array.from(templateMaps.keys()).join(
-        ', '
-      )}.`
+      `Invalid type paramter. Try one of ${Array.from(
+        template[language].keys()
+      ).join(', ')}.`
     )
 
   const filesToCreate = typeTranslator?.filesToCreate.map((file) => {
@@ -107,7 +49,10 @@ const typeTranslator = ({
         props: {
           name: capitalizeFirtsLetter(generatedName),
         },
-        target: `src/model/${generatedName}.spec.tsx`,
+        target:
+          language === 'js' || language === 'javascript'
+            ? `src/model/${generatedName}.spec.jsx`
+            : `src/model/${generatedName}.spec.tsx`,
       })
     )
   }

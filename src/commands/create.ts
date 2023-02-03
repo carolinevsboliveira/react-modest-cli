@@ -1,6 +1,8 @@
 import { GluegunToolbox } from 'gluegun'
 import { typeTranslator } from '../helpers/template-map-generation'
 
+const availableLanguages = ['ts', 'js', 'typescript', 'javascript']
+
 module.exports = {
   name: 'create',
   alias: ['c'],
@@ -13,11 +15,15 @@ module.exports = {
     } = toolbox
 
     try {
+      if (!availableLanguages.includes(parameters.second ?? 'ts'))
+        throw new Error(`There's no template available for selected language.`)
+
       const typeTranslated = typeTranslator({
         type: parameters.options.type,
         generate,
         generatedName: parameters.first,
         generateTestFile: parameters.options.test,
+        language: parameters.second ?? 'ts',
       })
 
       await Promise.all(typeTranslated.filesToCreate)
