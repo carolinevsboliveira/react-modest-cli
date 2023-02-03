@@ -13,7 +13,7 @@ const command: GluegunCommand = {
         [
           'Create',
           'c | create',
-          '<name> --type=<available_type> --hasTestFile',
+          '<name> <language> --type=<available_type> --test',
         ],
       ],
       {
