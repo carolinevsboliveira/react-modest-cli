@@ -1,5 +1,5 @@
 import { GluegunToolbox } from 'gluegun'
-import { typeTranslator } from '../helpers/template-map-generation'
+import { typeTranslator } from '../helpers/template-generator'
 
 module.exports = {
   name: 'create',
