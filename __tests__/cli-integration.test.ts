@@ -6,25 +6,40 @@ const cli = async (cmd) =>
   system.run(
     'node ' + filesystem.path(src, 'bin', 'react-modest-cli') + ` ${cmd}`
   )
+describe('react-modest-cli', () => {
+  describe('help commands', () => {
+    it('outputs version', async () => {
+      const output = await cli('--version')
+      expect(output).toContain('0.0.1')
+    })
 
-test('outputs version', async () => {
-  const output = await cli('--version')
-  expect(output).toContain('0.0.1')
-})
+    it('outputs help', async () => {
+      const output = await cli('--help')
+      expect(output).toContain('0.0.1')
+    })
+  })
 
-test('outputs help', async () => {
-  const output = await cli('--help')
-  expect(output).toContain('0.0.1')
-})
+  describe('create files command', () => {
+    it('should validate missing name before generate files', async () => {
+      const output = await cli('create')
 
-test('generates file', async () => {
-  const output = await cli('generate foo')
+      expect(output).toContain('A component name should be provided.')
+    })
 
-  expect(output).toContain('Generated file at models/foo-model.ts')
-  const foomodel = filesystem.read('models/foo-model.ts')
+    it('should validate missing type before generate files', async () => {
+      const output = await cli('create first-component')
 
-  expect(foomodel).toContain(`module.exports = {`)
-  expect(foomodel).toContain(`name: 'foo'`)
+      expect(output).toContain(
+        'Invalid type paramter. Try one of css, styled, scss, single'
+      )
+    })
 
-  filesystem.remove('models')
+    it('should validate wrong type before generate files', async () => {
+      const output = await cli('create first-component --type=fake')
+
+      expect(output).toContain(
+        'Invalid type paramter. Try one of css, styled, scss, single'
+      )
+    })
+  })
 })
