@@ -9,6 +9,7 @@ type typeTranslatorProps = {
   generatedName?: string
   generateTestFile?: boolean
   language: string
+  path: string
 }
 
 type availableLanguages = 'ts' | 'js' | 'javascript' | 'typescript'
@@ -19,16 +20,17 @@ const typeTranslator = ({
   generatedName,
   generateTestFile,
   language,
+  path,
 }: typeTranslatorProps): {
   filesToCreate: Promise<string>[]
 } => {
-  const typeTranslator = template[language as availableLanguages].get(type)
-
   validateInputedParams({
     generatedName,
-    typeTranslatorExists: Boolean(typeTranslator),
-    typeTranslatorKeys: Array.from(template[language].keys()),
+    type,
+    language,
   })
+
+  const typeTranslator = template[language as availableLanguages].get(type)
 
   const filesToCreate = typeTranslator?.filesToCreate.map((file) => {
     return generate({
@@ -37,7 +39,7 @@ const typeTranslator = ({
         imports: file.importLines ?? [],
       },
       template: file.model,
-      target: `src/model/${file.fileName ?? generatedName}.${file.extension}`,
+      target: `${path}/${file.fileName ?? generatedName}.${file.extension}`,
     })
   })
 
@@ -50,8 +52,8 @@ const typeTranslator = ({
         },
         target:
           language === 'js' || language === 'javascript'
-            ? `src/model/${generatedName}.spec.jsx`
-            : `src/model/${generatedName}.spec.tsx`,
+            ? `${path}/${generatedName}.spec.jsx`
+            : `${path}/${generatedName}.spec.tsx`,
       })
     )
   }

@@ -1,17 +1,33 @@
+import { template } from './map-template-according-to-language'
+
 type validateInputedParamsProps = {
+  language: string
+  type: string
   generatedName?: string
-  typeTranslatorExists?: boolean
-  typeTranslatorKeys: Array<string>
 }
 
 export function validateInputedParams({
+  language,
+  type,
   generatedName,
-  typeTranslatorExists,
-  typeTranslatorKeys,
 }: validateInputedParamsProps): void {
-  if (!generatedName) throw new Error('A component name should be provided.')
-  if (!typeTranslatorExists)
+  const supportedLanguages = ['ts', 'typescript', 'js', 'javascript']
+
+  if (!supportedLanguages.includes(language))
     throw new Error(
-      `Invalid type paramter. Try one of ${typeTranslatorKeys.join(', ')}.`
+      `Unsuported language. Please insert one of these keys: ${supportedLanguages.join(
+        ', '
+      )}.`
+    )
+
+  if (!generatedName) throw new Error('A component name should be provided.')
+
+  const typeTranslator = template[language].get(type)
+
+  if (!typeTranslator)
+    throw new Error(
+      `Invalid type paramter. Try one of these keys: ${Array.from(
+        typeTranslator.keys()
+      ).join(', ')}.`
     )
 }
