@@ -12,8 +12,6 @@ type typeTranslatorProps = {
   path: string
 }
 
-type availableLanguages = 'ts' | 'js' | 'javascript' | 'typescript'
-
 const typeTranslator = ({
   type,
   generate,
@@ -30,7 +28,7 @@ const typeTranslator = ({
     language,
   })
 
-  const typeTranslator = template[language as availableLanguages].get(type)
+  const typeTranslator = template(language).get(type)
 
   const filesToCreate = typeTranslator?.filesToCreate.map((file) => {
     return generate({
