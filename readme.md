@@ -1,6 +1,6 @@
 # React modest CLI
 
-A CLI for react-modest-cli that generates basic files to generate basics React components (in your existing project) with styling in css, scss and Styled Components.
+A modest cli that generates basic files to generate basics React components (in your existing project) with styling in css, scss and Styled Components.
 
 # Installation
 

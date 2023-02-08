@@ -1,6 +1,6 @@
 {
   "name": "react-modest-cli",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "react-modest-cli CLI",
   "private": false,
   "types": "build/types/types.d.ts",
